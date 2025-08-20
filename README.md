@@ -1,4 +1,4 @@
-# Machine Learning Pipeline with Apache Spark
+# ML Pipeline by Apache Spark
 
 ## Overview
 
@@ -21,24 +21,21 @@ This project demonstrates building a scalable and reproducible machine learning 
   Evaluates model performance using RMSE, MAE, and R² metrics to measure accuracy and goodness of fit.
 
 ---
-Key aspects include:
-
-Clear separation of preprocessing and modeling steps:
+## Key aspects include:
+- Clear separation of preprocessing and modeling steps:
 Encoding categorical variables into numeric form, assembling features, scaling numerical values, and applying machine learning models are organized as distinct pipeline stages. This modularity improves maintainability and reusability.
 
-Robust data preprocessing:
+- Robust data preprocessing:
 Proper handling of categorical features and numerical scaling prepares the data effectively for learning algorithms, reducing bias and improving convergence.
 
-Feature engineering:
+- Feature engineering:
 Combining both original numeric features and encoded categorical features into a single feature vector suitable for Spark ML models.
 
-Model training and evaluation:
+- Model training and evaluation:
 The pipeline facilitates training regression models and generating predictions consistently on new data. Evaluation metrics can be applied to assess model performance objectively.
 
-Scalability and reproducibility:
-Leveraging Spark’s distributed processing and pipeline abstraction supports large datasets and repeatable workflows, ideal for production environments or collaborative projects.
-
-
+- Scalability and reproducibility:
+- Leveraging Spark’s distributed processing and pipeline abstraction supports large datasets and repeatable workflows, ideal for production environments or collaborative projects.
 
 ## Example Pipeline Code
 
@@ -65,5 +62,4 @@ pipeline = Pipeline(stages=indexers + [assembler, scaler, rf])
 
 model = pipeline.fit(train_data)
 predictions = model.transform(test_data)
-
-#
+```

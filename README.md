@@ -76,5 +76,4 @@ The pipeline generates:
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-└── LICENSE                           # MIT License or other chosen license
 

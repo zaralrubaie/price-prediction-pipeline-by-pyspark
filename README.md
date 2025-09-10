@@ -48,12 +48,13 @@ The dataset includes the following key columns:
 ## Project Structure
 
 ```text
-avocado_price_pipeline/
+price_prediction_pipeline/
 │
-├── price_prediction_pipeline.py      # Main PySpark script with full workflow
-├── model_summary.txt                 # Summary of evaluation metrics (RMSE, MAE, R²)
-├── README.md                         # Project documentation and pipeline explanation
-├── requirements.txt                  # Required Python libraries
+├── price_prediction_pipeline.py   # Main PySpark script with full workflow
+├── requirements.txt               # Required Python libraries
+├── README.md                      # Full project documentation
+└── LICENSE                        # MIT License
+
 ````
 ## How to Run
 1. Clone the repository:

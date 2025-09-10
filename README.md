@@ -1,65 +1,80 @@
-# ML Pipeline by Apache Spark
+# Avocado Price Prediction Pipeline
 
 ## Overview
 
 This project demonstrates building a scalable and reproducible machine learning pipeline using Apache Spark MLlib. The pipeline automates the full workflow from raw data preprocessing to model training and evaluation, ensuring consistent and maintainable results.
 
+The goal is to predict avocado prices based on historical sales data, seasonal information, and various bag and PLU ratios.
+
+---
+
+## Dataset
+
+The dataset includes the following key columns:
+
+- `Total Volume`, `PLU_4046`, `PLU_4225`, `PLU_4770` — Sales volume by PLU
+- `Total Bags`, `Small Bags`, `Large Bags`, `XLarge Bags` — Bag size quantities
+- `type` — Avocado type (conventional or organic)
+- `region` — Sales region
+- `AveragePrice` — Target variable
+- `Date` — Transaction date (used to create day, month, year, and season features)
+
 ---
 
 ## Pipeline Components
 
-- **Data Preprocessing:**  
-  Encodes categorical variables using `StringIndexer`, and scales features with `MinMaxScaler`.
+1. **Data Preprocessing**
+   - Handles missing values
+   - Renames columns and converts `Date` to day, month, year, and day-of-week
+   - Creates bag and PLU ratios
+   - Assigns seasonal labels based on the month
 
-- **Feature Engineering:**  
-  Combines numeric and encoded categorical features into a single vector using `VectorAssembler`.
+2. **Feature Engineering**
+   - Encodes categorical variables using `StringIndexer`
+   - Combines numeric and encoded categorical features into a single vector using `VectorAssembler`
+   - Scales features with `MinMaxScaler`
 
-- **Model Training:**  
-  Trains a regression model (Random Forest Regressor) to predict the target variable.
+3. **Model Training**
+   - Trains a `RandomForestRegressor` to predict `AveragePrice`
+   - Uses a PySpark pipeline to ensure modularity and reproducibility
 
-- **Model Evaluation:**  
-  Evaluates model performance using RMSE, MAE, and R² metrics to measure accuracy and goodness of fit.
+4. **Model Evaluation**
+   - Metrics: RMSE, MAE, R²
+   - Produces predictions for test data
+   - Outputs can be saved as CSV for further analysis
 
 ---
-## Key aspects include:
-- Clear separation of preprocessing and modeling steps:
-Encoding categorical variables into numeric form, assembling features, scaling numerical values, and applying machine learning models are organized as distinct pipeline stages. This modularity improves maintainability and reusability.
 
-- Robust data preprocessing:
-Proper handling of categorical features and numerical scaling prepares the data effectively for learning algorithms, reducing bias and improving convergence.
+## Project Structure
 
-- Feature engineering:
-Combining both original numeric features and encoded categorical features into a single feature vector suitable for Spark ML models.
+```text
+avocado_price_pipeline/
+│
+├── price_prediction_pipeline.py      # Main PySpark script with full workflow
+├── model_summary.txt                 # Summary of evaluation metrics (RMSE, MAE, R²)
+├── README.md                         # Project documentation and pipeline explanation
+├── requirements.txt                  # Required Python libraries
+````
+## How to Run
+1. Clone the repository:
+````
+git clone https://github.com/zaralrubaie/avocado_price_pipeline.git
+````
+2. Install dependencies:
+````
+pip install -r requirements.txt
+````
+## Results
 
-- Model training and evaluation:
-The pipeline facilitates training regression models and generating predictions consistently on new data. Evaluation metrics can be applied to assess model performance objectively.
+The pipeline generates:
 
-- Scalability and reproducibility:
-- Leveraging Spark’s distributed processing and pipeline abstraction supports large datasets and repeatable workflows, ideal for production environments or collaborative projects.
+- Predictions on test data (predictions.csv)
+- Model evaluation metrics (model_summary.txt) including RMSE, MAE, and R²
+- Scalable and reproducible workflow for large datasets
 
-## Example Pipeline Code
+## License
 
-```python
-from pyspark.ml import Pipeline
-from pyspark.ml.feature import StringIndexer, VectorAssembler, MinMaxScaler
-from pyspark.ml.regression import RandomForestRegressor
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-categorical_cols = ['type', 'region', 'Season']
-indexers = [StringIndexer(inputCol=col, outputCol=col + '_encoded') for col in categorical_cols]
+└── LICENSE                           # MIT License or other chosen license
 
-numeric_cols = ['Total Volume', 'PLU_4046', 'PLU_4225', 'PLU_4770', 'Total Bags']
-
-assembler = VectorAssembler(
-    inputCols=numeric_cols + [col + '_encoded' for col in categorical_cols],
-    outputCol='assembled_features'
-)
-
-scaler = MinMaxScaler(inputCol='assembled_features', outputCol='features')
-
-rf = RandomForestRegressor(featuresCol='features', labelCol='AveragePrice')
-
-pipeline = Pipeline(stages=indexers + [assembler, scaler, rf])
-
-model = pipeline.fit(train_data)
-predictions = model.transform(test_data)
-```
